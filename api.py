@@ -1,3 +1,4 @@
+import httpx
 import os
 import pickle
 import numpy as np
@@ -21,6 +22,18 @@ app.add_middleware(
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 stream_events = []
+
+SLACK_WEBHOOK = os.getenv("SLACK_WEBHOOK_URL")
+
+def send_slack_alert(attack_cat, threat_score, risk):
+    if SLACK_WEBHOOK and risk == "HIGH":
+        message = {
+            "text": f"🚨 HIGH RISK ALERT!\nAttack: {attack_cat}\nThreat Score: {threat_score}\nAction: BLOCK"
+        }
+        try:
+            httpx.post(SLACK_WEBHOOK, json=message)
+        except:
+            pass
 
 def get_db():
     return psycopg2.connect(DATABASE_URL)
@@ -138,6 +151,8 @@ def predict_threat(data: ThreatInput):
         risk = "HIGH"
     elif threat_score >= 40:
         risk = "MEDIUM"
+        
+    send_slack_alert("Network Attack", threat_score, risk)
     return {
         "prediction": int(prediction),
         "attack_probability": probability,
