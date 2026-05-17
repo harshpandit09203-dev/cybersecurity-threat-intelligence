@@ -45,7 +45,7 @@ try:
 
     col4.metric(
         "🔴 High Risk",
-        f"{stats['high_risk']:,}"
+        f"{stats['high_risk_events']:,}"
     )
 
 except Exception as e:
