@@ -295,6 +295,3 @@ st.markdown("---")
 st.caption(
     "Built with FastAPI + XGBoost + Supabase + Streamlit"
 )
-
-st.markdown("---")
-st.caption("Built with FastAPI + XGBoost + Supabase + Streamlit")
