@@ -21,6 +21,7 @@ app.add_middleware(
 )
 
 DATABASE_URL = os.getenv("DATABASE_URL")
+stream_events = []
 
 def get_db():
     return psycopg2.connect(DATABASE_URL)
@@ -210,3 +211,13 @@ def predict_threat(data: ThreatInput):
         "threat_score": threat_score,
         "risk_category": risk
     }
+    @app.get("/stream")
+def get_stream():
+    return {"events": stream_events[-20:]}
+
+@app.post("/stream-event")
+def add_stream_event(event: dict):
+    stream_events.append(event)
+    if len(stream_events) > 100:
+        stream_events.pop(0)
+    return {"status": "event added"}
