@@ -53,10 +53,10 @@ End-to-end AI-powered cybersecurity platform that ingests network logs, detects 
 
 ## 📊 Dataset
 
-- *Source:* UNSW-NB15 Network Intrusion Dataset
-- *Records:* 257,673
-- *Attack Types:* 10 Categories
-- *Features:* 19 Engineered Features
+- Source: UNSW-NB15 Network Intrusion Dataset
+- Records: 257,673
+- Attack Types: 10 Categories
+- Features: 19 Engineered Features
 
 ### Attack Categories
 - Normal
@@ -81,6 +81,7 @@ End-to-end AI-powered cybersecurity platform that ingests network logs, detects 
 | GET | /alerts | Recent High Threat Alerts |
 | GET | /top-attacks | Top Attack Types |
 | POST | /predict | Real-Time Threat Prediction |
+| GET | /stream | Live Kafka-Style Threat Stream |
 
 ---
 
@@ -96,6 +97,9 @@ End-to-end AI-powered cybersecurity platform that ingests network logs, detects 
 ✅ Supabase Cloud Database  
 ✅ Streamlit Visualization  
 ✅ Autoencoder Neural Network  
+✅ Kafka-Style Streaming Simulation  
+✅ Slack Alert Integration  
+✅ Email Alert Integration  
 ✅ ETL Pipeline  
 ✅ REST API Architecture  
 
@@ -132,13 +136,37 @@ End-to-end AI-powered cybersecurity platform that ingests network logs, detects 
 
 ---
 
+## 📡 Real-Time Streaming
+
+Kafka-style streaming simulation implemented using:
+
+- Python Queue
+- Multi-threading
+- Producer / Consumer Architecture
+- Live Stream API Endpoint
+- Real-Time Streamlit Monitoring
+
+---
+
+## 🚨 Alerting System
+
+Integrated Real-Time Alerting:
+
+- Slack Webhook Notifications
+- Email Threat Alerts
+- High-Risk Attack Detection Alerts
+- Live Threat Monitoring
+
+---
+
 ## 📂 Project Structure
 
-```bash
+bash
 cybersecurity-threat-intelligence/
 ├── README.md
 ├── api.py
 ├── app.py
+├── kafka_simulation.py
 ├── autoencoder_model.keras
 ├── notebooks/
 ├── requirements.txt
@@ -146,10 +174,12 @@ cybersecurity-threat-intelligence/
 ├── scaler.pkl
 ├── xgb_model.pkl
 
+
 ---
 
 ## 👤 Author
 
-**Harsh Pandit**
-Founder @ Nexport Trade | B.Sc. Computer Science
+*Harsh Pandit*  
+Founder @ Nexport Trade | B.Sc. Computer Science  
+
 GitHub: [@harshpandit09203-dev](https://github.com/harshpandit09203-dev)
