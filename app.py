@@ -1,8 +1,8 @@
-
 import streamlit as st
 import requests
 import pandas as pd
 import plotly.express as px
+import time
 
 API_URL = "https://cybersecurity-threat-intelligence-api.onrender.com"
 
@@ -79,6 +79,39 @@ st.plotly_chart(
     fig,
     use_container_width=True
 )
+
+st.markdown("---")
+
+st.subheader("⚡ Live Threat Stream")
+
+auto_refresh = st.toggle(
+    "Auto Refresh (every 3 sec)",
+    value=True
+)
+
+stream_placeholder = st.empty()
+
+try:
+    stream = requests.get(
+        f"{API_URL}/stream"
+    ).json()
+    events = stream.get("events", [])
+    if events:
+        df_stream = pd.DataFrame(events)
+        stream_placeholder.dataframe(
+            df_stream,
+            use_container_width=True
+        )
+    else:
+        stream_placeholder.info(
+            "No live events yet — run Kafka simulation"
+        )
+except:
+    stream_placeholder.error("Stream not available")
+
+if auto_refresh:
+    time.sleep(3)
+    st.rerun()
 
 st.markdown("---")
 
@@ -265,3 +298,6 @@ st.markdown("---")
 st.caption(
     "Built with FastAPI + XGBoost + Supabase + Streamlit"
 )
+
+st.markdown("---")
+st.caption("Built with FastAPI + XGBoost + Supabase + Streamlit")
