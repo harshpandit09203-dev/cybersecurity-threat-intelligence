@@ -109,9 +109,6 @@ try:
 except:
     stream_placeholder.error("Stream not available")
 
-if auto_refresh:
-    time.sleep(3)
-    st.rerun()
 
 st.markdown("---")
 
