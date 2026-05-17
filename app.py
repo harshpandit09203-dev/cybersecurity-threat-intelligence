@@ -86,7 +86,7 @@ st.subheader("⚡ Live Threat Stream")
 
 auto_refresh = st.toggle(
     "Auto Refresh (every 3 sec)",
-    value=True
+    value=False
 )
 
 stream_placeholder = st.empty()
