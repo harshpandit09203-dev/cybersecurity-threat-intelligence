@@ -1,4 +1,3 @@
-
 import os
 import pickle
 import numpy as np
@@ -55,38 +54,21 @@ class ThreatInput(BaseModel):
 
 @app.get("/")
 def health():
-    return {
-        "status": "Cybersecurity Threat Intelligence API Running 🛡️"
-    }
+    return {"status": "Cybersecurity Threat Intelligence API Running 🛡️"}
 
 @app.get("/stats")
 def get_stats():
-
     conn = get_db()
     cursor = conn.cursor()
-
-    cursor.execute(
-        "SELECT COUNT(*) FROM fact_security_events"
-    )
+    cursor.execute("SELECT COUNT(*) FROM fact_security_events")
     total = cursor.fetchone()[0]
-
-    cursor.execute(
-        "SELECT COUNT(*) FROM fact_security_events WHERE label = 1"
-    )
+    cursor.execute("SELECT COUNT(*) FROM fact_security_events WHERE label = 1")
     attacks = cursor.fetchone()[0]
-
-    cursor.execute(
-        "SELECT COUNT(*) FROM fact_security_events WHERE label = 0"
-    )
+    cursor.execute("SELECT COUNT(*) FROM fact_security_events WHERE label = 0")
     normal = cursor.fetchone()[0]
-
-    cursor.execute(
-        "SELECT COUNT(*) FROM fact_security_events WHERE risk_category = 'HIGH'"
-    )
+    cursor.execute("SELECT COUNT(*) FROM fact_security_events WHERE risk_category = 'HIGH'")
     high_risk = cursor.fetchone()[0]
-
     conn.close()
-
     return {
         "total_events": total,
         "total_attacks": attacks,
@@ -96,28 +78,17 @@ def get_stats():
 
 @app.get("/alerts")
 def get_alerts():
-
     conn = get_db()
     cursor = conn.cursor()
-
     cursor.execute("""
-        SELECT
-            event_id,
-            attack_cat,
-            threat_score,
-            risk_category,
-            proto,
-            event_timestamp
+        SELECT event_id, attack_cat, threat_score, risk_category, proto, event_timestamp
         FROM fact_security_events
         WHERE label = 1
         ORDER BY threat_score DESC
         LIMIT 20
     """)
-
     rows = cursor.fetchall()
-
     conn.close()
-
     return {
         "alerts": [
             {
@@ -134,84 +105,47 @@ def get_alerts():
 
 @app.get("/top-attacks")
 def top_attacks():
-
     conn = get_db()
     cursor = conn.cursor()
-
     cursor.execute("""
-        SELECT
-            attack_cat,
-            COUNT(*) as total
+        SELECT attack_cat, COUNT(*) as total
         FROM fact_security_events
         WHERE label = 1
         GROUP BY attack_cat
         ORDER BY total DESC
     """)
-
     rows = cursor.fetchall()
-
     conn.close()
-
     return {
-        "top_attacks": [
-            {
-                "attack": r[0],
-                "count": r[1]
-            }
-            for r in rows
-        ]
+        "top_attacks": [{"attack": r[0], "count": r[1]} for r in rows]
     }
 
 @app.post("/predict")
 def predict_threat(data: ThreatInput):
-
     values = np.array([[
-        data.dur,
-        data.spkts,
-        data.dpkts,
-        data.sbytes,
-        data.dbytes,
-        data.rate,
-        data.sloss,
-        data.dloss,
-        data.sttl,
-        data.dttl,
-        data.sload,
-        data.dload,
-        data.ct_srv_src,
-        data.ct_srv_dst,
-        data.is_sm_ips_ports,
-        data.packet_ratio,
-        data.byte_ratio,
-        data.failed_login_ratio,
-        data.conn_freq_score
+        data.dur, data.spkts, data.dpkts, data.sbytes, data.dbytes,
+        data.rate, data.sloss, data.dloss, data.sttl, data.dttl,
+        data.sload, data.dload, data.ct_srv_src, data.ct_srv_dst,
+        data.is_sm_ips_ports, data.packet_ratio, data.byte_ratio,
+        data.failed_login_ratio, data.conn_freq_score
     ]])
-
     scaled = scaler.transform(values)
-
     prediction = model.predict(scaled)[0]
-
-    probability = float(
-        model.predict_proba(scaled)[0][1]
-    )
-
+    probability = float(model.predict_proba(scaled)[0][1])
     threat_score = round(probability * 100, 2)
-
     risk = "LOW"
-
     if threat_score >= 70:
         risk = "HIGH"
-
     elif threat_score >= 40:
         risk = "MEDIUM"
-
     return {
         "prediction": int(prediction),
         "attack_probability": probability,
         "threat_score": threat_score,
         "risk_category": risk
     }
-    @app.get("/stream")
+
+@app.get("/stream")
 def get_stream():
     return {"events": stream_events[-20:]}
 
